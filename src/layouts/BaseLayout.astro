@@ -1,9 +1,8 @@
 ---
-import '@fontsource-variable/newsreader/opsz.css';
-import '@fontsource-variable/newsreader/opsz-italic.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
-import '@fontsource/ibm-plex-mono/700.css';
+import '@fontsource/dm-serif-display/400.css';
+import '@fontsource/dm-serif-display/400-italic.css';
+import '@fontsource-variable/dm-sans/wght.css';
+import '@fontsource-variable/dm-sans/wght-italic.css';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import Header from '../components/Header.astro';
@@ -38,7 +37,7 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} · Blog`} href="/rss.xml" />
-    <meta name="theme-color" content="#EFE9D8" />
+    <meta name="theme-color" content="#FAF9F6" />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />
@@ -51,11 +50,11 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
   <body class="flex min-h-screen flex-col">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-card focus:px-4 focus:py-2"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-bg"
       >Skip to content</a
     >
     <Header />
-    <main id="main" class="flex-1 pt-16">
+    <main id="main" class="flex-1 pt-20">
       <slot />
     </main>
     <Footer />

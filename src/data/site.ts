@@ -19,8 +19,8 @@ export const site = {
   /** File in /public — replace it to update the downloadable resume. */
   resumePdf: '/Arnav_Diddi_Resume.pdf',
 
-  /** The little rotated "stamp" shown on the home page + resume. */
-  status: 'Seeking Summer 2027 PM Internships',
+  /** The status line with the green dot (home page + resume). */
+  status: 'Seeking Summer 2027 PM internships',
 };
 
 /** Top navigation. `href` must match a page in src/pages. */
@@ -33,13 +33,20 @@ export const nav = [
 
 /** Home page hero copy. */
 export const hero = {
-  eyebrow: 'Product · AI · Building things people use',
-  tagline: 'Aspiring Product Manager who likes building with AI, and building things people end up relying on.',
+  /** Big serif headline. `accent` is the grey italic ending. */
+  headline: 'Turning ideas into products',
+  accent: 'people use.',
   intro:
-    "I'm a first-year M.S. student in Technical Product Management at Northeastern, with a Computer Science and Business Analytics background from Rutgers. I spent my last role at Johnson & Johnson rolling out a generative AI tool to the teams who'd actually use it, and I've been building my own products on the side ever since. I'm aiming for an APM role straight out of my master's, and right now I'm recruiting for Summer 2027 PM internships.",
+    "I'm a Technical Product Management M.S. student at Northeastern. At Johnson & Johnson I rolled out a generative AI tool to the teams who'd actually use it, and I've been building my own products ever since.",
+  /** Small fact strip under the headline. */
+  facts: [
+    { label: 'Now', value: 'M.S. Technical PM, Northeastern' },
+    { label: 'Before', value: 'PMO Analyst, Johnson & Johnson' },
+    { label: 'Undergrad', value: 'CS + BAIT, Rutgers · Magna Cum Laude' },
+  ],
 };
 
-/** The "Currently" ledger panel on the home page. */
+/** The "Currently" panel on the home page. */
 export const currently = [
   { key: 'Studying', value: 'M.S. Technical Product Management, Northeastern (Fall 2026 – Spring 2028)' },
   { key: 'Recruiting for', value: 'Summer 2027 Product Manager / APM internships' },

@@ -45,7 +45,7 @@ Everything you'd want to change lives in plain text files:
 
 | I want to change… | Edit this file |
 | --- | --- |
-| Name, email, links, status stamp, home intro, "Currently" panel | `src/data/site.ts` |
+| Name, email, links, status line, home headline + intro, "Currently" panel | `src/data/site.ts` |
 | Resume: education, jobs, leadership, skills, certifications | `src/data/resume.ts` |
 | The downloadable resume PDF | Replace `public/Arnav_Diddi_Resume.pdf` (keep the name) |
 | About page bio + "How I think about product" | `src/pages/about.astro` |
@@ -237,7 +237,7 @@ src/
     content.ts               Sorting + draft filtering
     api/                     Blog API: auth, validation, GitHub storage
   pages/                     One file per route (incl. pages/api/posts/)
-  styles/global.css          "Ledger" design system
+  styles/global.css          "Editorial" design system
 public/
   Arnav_Diddi_Resume.pdf     Download on /resume
 scripts/new-post.mjs         `npm run new-post "Title"`

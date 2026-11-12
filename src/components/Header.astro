@@ -6,10 +6,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a href="/" class="logo" aria-label={`${site.name}, home`}>
-      <span class="logo__dot" aria-hidden="true"></span>
-      arnav.diddi
-    </a>
+    <a href="/" class="logo" aria-label={`${site.name}, home`}>{site.name}</a>
 
     <nav aria-label="Main" class="desktop-nav">
       <ul>
@@ -23,7 +20,12 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
           ))
         }
       </ul>
-      <a href="/contact" class="header-cta" aria-current={isActive('/contact') ? 'page' : undefined}>Get in touch</a>
+      <a href="/contact" class="header-cta" aria-current={isActive('/contact') ? 'page' : undefined}>
+        Get in touch
+        <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true"
+          ><path d="M2 9L9 2M3.5 2H9v5.5" fill="none" stroke="currentColor" stroke-width="1.6"></path></svg
+        >
+      </a>
     </nav>
 
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
@@ -51,6 +53,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   const menu = document.getElementById('mobile-menu');
+  const header = document.querySelector<HTMLElement>('.site-header');
   if (toggle && menu) {
     const setOpen = (open: boolean) => {
       toggle.setAttribute('aria-expanded', String(open));
@@ -66,6 +69,12 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     });
     window.matchMedia('(min-width: 860px)').addEventListener('change', (e) => e.matches && setOpen(false));
   }
+  // Hairline under the header once the page scrolls
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 </script>
 
 <style>
@@ -73,41 +82,37 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 50;
-    background: rgb(239 233 216 / 0.94);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--color-line);
+    background: rgb(250 249 246 / 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .site-header.is-scrolled {
+    border-bottom-color: var(--color-line);
   }
   .site-header__inner {
-    height: 64px;
+    height: 80px;
     max-width: 1080px;
     margin-inline: auto;
-    padding-inline: 26px;
+    padding-inline: 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
   }
   .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    font-family: var(--font-mono);
-    font-size: 15px;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 24px;
+    letter-spacing: -0.01em;
     color: var(--color-ink);
     text-decoration: none;
-  }
-  .logo__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--color-accent);
   }
   .desktop-nav {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 34px;
   }
   .desktop-nav ul {
     display: flex;
@@ -118,33 +123,30 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
   }
   .nav-link {
     font-size: 14.5px;
-    color: var(--color-muted);
+    font-weight: 500;
+    color: var(--color-dim);
     text-decoration: none;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--color-accent);
+    transition: color 0.15s ease;
   }
   .nav-link:hover,
   .nav-link[aria-current='page'] {
     color: var(--color-ink);
-    text-decoration-line: underline;
   }
   .header-cta {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 9px 16px;
-    border: 1px solid var(--color-accent);
-    border-radius: 2px;
-    color: var(--color-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-bg);
     text-decoration: none;
-    transition:
-      background-color 0.15s ease,
-      color 0.15s ease;
+    transition: background-color 0.15s ease;
   }
-  .header-cta:hover,
-  .header-cta[aria-current='page'] {
-    background: var(--color-accent);
-    color: var(--color-card);
+  .header-cta:hover {
+    background: #3a352f;
   }
   .menu-toggle {
     display: none;
@@ -163,6 +165,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     display: block;
     width: 22px;
     height: 2px;
+    border-radius: 2px;
     background: var(--color-ink);
     transition:
       transform 0.2s ease,
@@ -178,9 +181,10 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     transform: translateY(-7px) rotate(-45deg);
   }
   .mobile-menu {
-    background: var(--color-bg-elevated);
+    background: var(--color-bg);
     border-top: 1px solid var(--color-line);
-    padding: 4px 26px 16px;
+    border-bottom: 1px solid var(--color-line);
+    padding: 4px 32px 20px;
   }
   .mobile-menu ul {
     list-style: none;
@@ -189,15 +193,16 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
   }
   .mobile-menu a {
     display: block;
-    padding: 12px 0;
+    padding: 13px 0;
     border-bottom: 1px solid var(--color-line);
-    color: var(--color-ink);
+    color: var(--color-muted);
     text-decoration: none;
-    font-size: 17px;
+    font-family: var(--font-display);
+    font-size: 24px;
   }
   .mobile-menu a[aria-current='page'] {
-    color: var(--color-accent);
-    font-weight: 600;
+    color: var(--color-ink);
+    font-style: italic;
   }
   @media (max-width: 859px) {
     .desktop-nav {
@@ -208,6 +213,9 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     }
   }
   @media (max-width: 559px) {
+    .site-header__inner {
+      height: 68px;
+    }
     .site-header__inner,
     .mobile-menu {
       padding-inline: 16px;

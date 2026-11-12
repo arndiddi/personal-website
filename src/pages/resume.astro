@@ -32,7 +32,7 @@ const sections: { id: string; title: string; entries: Entry[] }[] = [
         {
           [['education', 'Education'], ['experience', 'Work'], ['leadership', 'Leadership'], ['skills', 'Skills']].map(
             ([id, label]) => (
-              <a href={`#${id}`} class="tag !text-[11.5px] hover:!border-accent hover:!text-accent">
+              <a href={`#${id}`} class="tag !px-4 !py-1.5 !text-[13px] hover:!bg-ink hover:!text-bg">
                 {label}
               </a>
             ),
@@ -149,10 +149,8 @@ const sections: { id: string; title: string; entries: Entry[] }[] = [
   }
   .resume-heading {
     display: inline-block;
-    font-size: clamp(1.35rem, 2.4vw, 1.7rem);
-    font-weight: 600;
-    padding-bottom: 6px;
-    border-bottom: 3px double var(--color-ink);
+    font-size: clamp(1.75rem, 3vw, 2.2rem);
+    line-height: 1.1;
     margin-bottom: 28px;
   }
   .resume-bullets {

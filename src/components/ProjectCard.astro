@@ -11,7 +11,7 @@ const { title, summary, status, dates, stack, outcome, draft } = project.data;
 <a href={`/portfolio/${project.id}`} class="card card-link flex h-full flex-col gap-3">
   <div class="flex items-start justify-between gap-3">
     <span class="micro text-dim">{dates}</span>
-    <span class:list={['micro font-semibold', status === 'In progress' ? 'text-accent-2' : 'text-accent']}>
+    <span class:list={['status-chip !text-[12.5px]', (draft || status === 'In progress') && 'status-chip--gold']}>
       {draft ? 'Draft' : status}
     </span>
   </div>
@@ -19,7 +19,7 @@ const { title, summary, status, dates, stack, outcome, draft } = project.data;
   <p class="text-small text-muted">{summary}</p>
   {
     outcome && (
-      <p class="text-small border-l-2 border-accent pl-3 text-ink">
+      <p class="text-small rounded-xl bg-bg-elevated px-4 py-3 text-ink">
         {outcome}
       </p>
     )
@@ -27,5 +27,5 @@ const { title, summary, status, dates, stack, outcome, draft } = project.data;
   <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
     {stack.slice(0, 4).map((s) => <span class="tag">{s}</span>)}
   </div>
-  <span class="micro text-accent">Read case study →</span>
+  <span class="text-[14px] font-semibold">Read case study →</span>
 </a>

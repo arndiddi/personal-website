@@ -1,16 +1,19 @@
 ---
-/** Eyebrow + double-ruled title + optional intro paragraph. */
+/** Eyebrow + big serif title (with optional grey italic ending) + optional intro paragraph. */
 interface Props {
   eyebrow?: string;
   title: string;
+  /** Words shown in grey italics after the title, e.g. title="Things I've built," accent="and why." */
+  accent?: string;
   as?: 'h1' | 'h2';
+  id?: string;
   class?: string;
 }
-const { eyebrow, title, as: Tag = 'h2', class: className = '' } = Astro.props;
+const { eyebrow, title, accent, as: Tag = 'h2', id, class: className = '' } = Astro.props;
 ---
 
 <header class:list={['section-header', className]}>
-  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
-  <Tag class="section-title">{title}</Tag>
-  {Astro.slots.has('default') && <div class="lede mt-5 max-w-[62ch]"><slot /></div>}
+  {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+  <Tag class="section-title" id={id}>{title}{accent && <> <em>{accent}</em></>}</Tag>
+  {Astro.slots.has('default') && <div class="lede mt-5 max-w-[60ch]"><slot /></div>}
 </header>

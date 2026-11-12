@@ -41,7 +41,7 @@ const principles = [
     <div class="container-ledger grid-about">
       <div>
         <SectionHeader as="h1" eyebrow="About" title="Hi, I'm Arnav." class="!mb-8" />
-        <div class="drop-cap max-w-[62ch] space-y-4 text-[16.5px]">
+        <div class="max-w-[60ch] space-y-4 text-[17px] text-[#3b3631]">
           <p>
             I am a first-year Master's student in Technical Product Management at Northeastern University, working
             toward becoming a Feature Product Manager who builds with AI. My goal is to start my career through an
@@ -97,14 +97,14 @@ const principles = [
     <div class="container-ledger">
       <header class="section-header">
         <p class="eyebrow mb-3">How I work</p>
-        <h2 id="principles-title" class="section-title">How I think about product</h2>
+        <h2 id="principles-title" class="section-title">How I think <em>about product.</em></h2>
       </header>
       <ol class="grid-cards list-none p-0">
         {
           principles.map((p) => (
             <li class="card">
-              <span class="micro text-accent-2">{p.n}</span>
-              <h3 class="card-title mt-2">{p.title}</h3>
+              <span class="font-display text-[30px] italic leading-none text-accent-2">{p.n}</span>
+              <h3 class="card-title mt-4">{p.title}</h3>
               <p class="text-small mt-2 text-muted">{p.body}</p>
             </li>
           ))
@@ -117,7 +117,7 @@ const principles = [
     <div class="container-ledger">
       <header class="section-header">
         <p class="eyebrow mb-3">Off the clock</p>
-        <h2 id="beyond-title" class="section-title">Beyond the résumé</h2>
+        <h2 id="beyond-title" class="section-title">Beyond <em>the résumé.</em></h2>
         <p class="lede mt-5 max-w-[62ch]">
           I'm a pretty sociable guy and a proud extrovert. I'd rather be out with friends than sitting at home. Here's
           what I'm into lately. If any of it overlaps with you, I'd love to hear from you.
@@ -129,7 +129,7 @@ const principles = [
           interests.map(({ entry, Content }) => (
             <article class="card interest" id={entry.id}>
               <p class="micro text-accent-2">{entry.data.label}</p>
-              <h3 class="mt-1 text-[1.45rem] font-semibold leading-tight">{entry.data.title}</h3>
+              <h3 class="mt-2 text-[1.75rem] leading-tight">{entry.data.title}</h3>
               <div class="interest-body mt-3 space-y-3 text-[15.5px]">
                 <Content />
               </div>
@@ -150,15 +150,15 @@ const principles = [
   .interest {
     break-inside: avoid;
     margin-bottom: 20px;
-    padding: 26px;
+    padding: 30px;
   }
   .interest-body :global(em) {
-    color: var(--color-accent);
+    color: var(--color-ink);
   }
   .interest-body :global(a) {
-    color: var(--color-accent);
     text-decoration: underline;
-    text-underline-offset: 3px;
+    text-decoration-color: var(--color-accent-2);
+    text-underline-offset: 4px;
   }
   @media (max-width: 819px) {
     .interest-grid {

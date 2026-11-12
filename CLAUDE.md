@@ -11,8 +11,10 @@ keep copy first-person, warm, concise, and grounded in real facts from `src/data
 ## Where things live
 - Copy/data: `src/data/site.ts`, `src/data/resume.ts`
 - Markdown collections (schemas in `src/content.config.ts`): `src/content/{blog,projects,teardowns,interests}`
-- Design tokens + component classes ("Ledger" theme): `src/styles/global.css`. Reuse `.card`, `.fields`,
-  `.section-title`, `.eyebrow`, `.status-chip`, `.tag`, `.btn-*`, `.grid-*` instead of new one-off styles.
+- Design tokens + component classes ("Editorial" theme: off-white, DM Serif Display headlines with a grey italic
+  `<em>` ending, DM Sans body, black pill buttons): `src/styles/global.css`. Reuse `.card`, `.fields`,
+  `.section-title`, `.hero-name`, `.article-title`, `.eyebrow`, `.status-chip`, `.tag`, `.btn-*`, `.grid-*`
+  instead of new one-off styles. `SectionHeader` takes an `accent` prop for the grey italic words.
 - Blog API: `src/pages/api/posts/*` + `src/lib/api/*`; commits Markdown to GitHub in production,
   writes local files in dev.
 
