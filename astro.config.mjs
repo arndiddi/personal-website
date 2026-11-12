@@ -14,6 +14,9 @@ export default defineConfig({
   // Every page is pre-built to plain HTML (fast + free on Netlify).
   // Only the blog API routes (src/pages/api/...) run as serverless functions.
   output: 'static',
+  // Build /about as about.html (not about/index.html) so Netlify serves /about
+  // directly instead of redirecting every link to /about/.
+  build: { format: 'file' },
   redirects: { '/portfolio/teardowns': '/portfolio#teardowns', '/projects': '/portfolio', '/experience': '/resume' },
   adapter: netlify(),
   integrations: [sitemap({ filter: (page) => !page.includes('/contact/thanks') })],
