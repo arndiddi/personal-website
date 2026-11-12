@@ -1,6 +1,7 @@
 ---
 import { nav, site } from '../data/site';
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+import { cleanPath } from '../lib/path';
+const path = cleanPath(Astro.url);
 const isActive = (href: string) => path === href || path.startsWith(href + '/');
 ---
 
