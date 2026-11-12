@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import TeardownRow from '../components/TeardownRow.astro';
+import { getProjects, getTeardowns } from '../lib/content';
+
+const projects = await getProjects();
+const teardowns = await getTeardowns();
+---
+
+<BaseLayout
+  title="Portfolio"
+  description="Product case studies and teardowns by Arnav Diddi: an OCD treatment app, an AI interview question generator, a privacy-first Instagram tool, and more."
+>
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger">
+      <SectionHeader as="h1" eyebrow="Portfolio" title="Projects & product teardowns">
+        Things I've built and products I've pulled apart. I write each one up the way I'd want to hear it in a product
+        review: the problem, the user, the decisions, and how I'd measure success.
+      </SectionHeader>
+
+      <h2 class="eyebrow mb-6" id="projects">Projects · {projects.length}</h2>
+      <div class="grid-cards">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="teardowns">
+    <div class="container-ledger">
+      <header class="section-header">
+        <p class="eyebrow mb-3">Product thinking</p>
+        <h2 id="teardowns" class="section-title">Teardowns</h2>
+        <p class="lede mt-5 max-w-[62ch]">
+          Short breakdowns of real products: what they're optimizing for, where they fall short, and what I'd
+          prioritize next, with metrics.
+        </p>
+      </header>
+
+      {
+        teardowns.length > 0 ? (
+          <div class="card !p-7 max-sm:!p-5">
+            {teardowns.map((t) => (
+              <TeardownRow teardown={t} />
+            ))}
+          </div>
+        ) : (
+          <div class="card flex flex-col items-start gap-3 border-dashed !p-8">
+            <span class="status-chip status-chip--gold">In the works</span>
+            <p class="max-w-[56ch] text-muted">
+              My first teardown, on how Instagram handles follower lists (and why it won't tell you who unfollowed you),
+              is being written now. Check back soon, or{' '}
+              <a href="/contact" class="link">
+                tell me which product I should tear down next
+              </a>
+              .
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

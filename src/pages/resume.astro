@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { site } from '../data/site';
+import { education, work, leadership, skillGroups, certifications, languages, type Entry } from '../data/resume';
+
+// Everything on this page comes from src/data/resume.ts
+const sections: { id: string; title: string; entries: Entry[] }[] = [
+  { id: 'experience', title: 'Work experience', entries: work },
+  { id: 'leadership', title: 'Leadership & activities', entries: leadership },
+];
+---
+
+<BaseLayout
+  title="Resume"
+  description="Resume of Arnav Diddi: education at Northeastern and Rutgers, work at Johnson & Johnson, leadership, skills, and certifications."
+>
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeader as="h1" eyebrow="Resume" title="Experience & education" class="!mb-0">
+          The full record, including the activities that didn't fit on one page.
+        </SectionHeader>
+        <div class="flex flex-col items-start gap-4 md:items-end">
+          <span class="status-chip">{site.status}</span>
+          <a href={site.resumePdf} class="btn btn-primary" download>Download PDF ↓</a>
+        </div>
+      </div>
+
+      <!-- Jump links -->
+      <nav aria-label="Resume sections" class="mt-12 mb-4 flex flex-wrap gap-2">
+        {
+          [['education', 'Education'], ['experience', 'Work'], ['leadership', 'Leadership'], ['skills', 'Skills']].map(
+            ([id, label]) => (
+              <a href={`#${id}`} class="tag !text-[11.5px] hover:!border-accent hover:!text-accent">
+                {label}
+              </a>
+            ),
+          )
+        }
+      </nav>
+
+      <!-- Education -->
+      <section id="education" class="resume-block">
+        <h2 class="resume-heading">Education</h2>
+        <div class="grid gap-5 md:grid-cols-2">
+          {
+            education.map((ed) => (
+              <article class="card">
+                <p class="micro text-dim">{ed.dates}</p>
+                <h3 class="card-title mt-1">{ed.school}</h3>
+                <p class="mt-1">{ed.degree}</p>
+                <p class="text-small italic text-muted">{ed.detail}</p>
+                <ul class="text-small mt-3 space-y-1 text-muted">
+                  {ed.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+                <p class="micro mt-3 text-dim">{ed.location}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      {
+        sections.map((section) => (
+          <section id={section.id} class="resume-block">
+            <h2 class="resume-heading">{section.title}</h2>
+            <div>
+              {section.entries.map((e) => (
+                <article class="grid-teardown border-t border-line py-7 first:border-t-0 first:pt-0">
+                  <div class="flex flex-col gap-1">
+                    <span class="micro text-accent-2">{e.dates}</span>
+                    <span class="micro text-dim">{e.location}</span>
+                  </div>
+                  <div>
+                    <h3 class="card-title">{e.org}</h3>
+                    <p class="italic text-muted">
+                      {e.role}
+                      {e.note && <span class="text-small not-italic text-dim"> · {e.note}</span>}
+                    </p>
+                    <ul class="resume-bullets mt-3">
+                      {e.bullets.map((b) => (
+                        <li>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+
+      <!-- Skills -->
+      <section id="skills" class="resume-block">
+        <h2 class="resume-heading">Skills</h2>
+        <div class="grid-skills">
+          {
+            skillGroups.map((g) => (
+              <div class="card">
+                <h3 class="eyebrow">{g.title}</h3>
+                <div class="mt-3 flex flex-wrap gap-1.5">
+                  {g.items.map((s) => (
+                    <span class="tag">{s}</span>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="grid-about mt-10">
+          <div>
+            <h3 class="eyebrow mb-4">Certifications</h3>
+            <dl class="fields">
+              {
+                certifications.map((c) => (
+                  <div class="!flex !items-baseline !justify-between gap-4">
+                    <dd>{c.name}</dd>
+                    <dt class="shrink-0 text-right">{[c.issuer, c.date].filter(Boolean).join(' · ')}</dt>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+          <div>
+            <h3 class="eyebrow mb-4">Languages</h3>
+            <dl class="fields">
+              {
+                languages.map((l) => (
+                  <div>
+                    <dd>{l}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .resume-block {
+    padding-top: 56px;
+  }
+  .resume-heading {
+    display: inline-block;
+    font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+    font-weight: 600;
+    padding-bottom: 6px;
+    border-bottom: 3px double var(--color-ink);
+    margin-bottom: 28px;
+  }
+  .resume-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .resume-bullets li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--color-ink);
+  }
+  .resume-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.68em;
+    width: 7px;
+    height: 1px;
+    background: var(--color-accent-2);
+  }
+</style>

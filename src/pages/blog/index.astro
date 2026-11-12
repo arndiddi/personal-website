@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getPosts } from '../../lib/content';
+
+const posts = await getPosts();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Writing by Arnav Diddi on product management, AI, building side projects, and recruiting for PM roles."
+>
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger">
+      <SectionHeader as="h1" eyebrow="Blog" title="Notes & writing">
+        Thinking out loud about product, AI, the things I'm building, and what I'm learning along the way.
+      </SectionHeader>
+
+      {
+        posts.length > 0 ? (
+          <div>
+            {posts.map((post) => (
+              <PostRow post={post} />
+            ))}
+          </div>
+        ) : (
+          <div class="card flex flex-col items-start gap-3 border-dashed !p-8">
+            <span class="status-chip status-chip--gold">Coming soon</span>
+            <p class="max-w-[56ch] text-muted">
+              The first posts are on the way. In the meantime, take a look at my{' '}
+              <a class="link" href="/portfolio">
+                projects
+              </a>{' '}
+              or subscribe via{' '}
+              <a class="link" href="/rss.xml">
+                RSS
+              </a>
+              .
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

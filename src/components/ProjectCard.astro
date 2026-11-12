@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props {
+  project: CollectionEntry<'projects'>;
+  headingLevel?: 'h2' | 'h3';
+}
+const { project, headingLevel: H = 'h3' } = Astro.props;
+const { title, summary, status, dates, stack, outcome, draft } = project.data;
+---
+
+<a href={`/portfolio/${project.id}`} class="card card-link flex h-full flex-col gap-3">
+  <div class="flex items-start justify-between gap-3">
+    <span class="micro text-dim">{dates}</span>
+    <span class:list={['micro font-semibold', status === 'In progress' ? 'text-accent-2' : 'text-accent']}>
+      {draft ? 'Draft' : status}
+    </span>
+  </div>
+  <H class="card-title">{title}</H>
+  <p class="text-small text-muted">{summary}</p>
+  {
+    outcome && (
+      <p class="text-small border-l-2 border-accent pl-3 text-ink">
+        {outcome}
+      </p>
+    )
+  }
+  <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
+    {stack.slice(0, 4).map((s) => <span class="tag">{s}</span>)}
+  </div>
+  <span class="micro text-accent">Read case study →</span>
+</a>

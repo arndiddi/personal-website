@@ -1,0 +1,168 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import headshot from '../assets/headshot.jpg';
+import { site } from '../data/site';
+import { languages } from '../data/resume';
+import { getInterests } from '../lib/content';
+
+// Edit the boxes in src/content/interests/*.md
+const interests = await Promise.all(
+  (await getInterests()).map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
+);
+
+// How I think about product. Edit freely.
+const principles = [
+  {
+    n: '01',
+    title: 'Own it end to end',
+    body: 'I want to understand a product inside and out: who uses it, where it breaks, and what “better” would actually look like. Then I want to be the one rallying people to fix it.',
+  },
+  {
+    n: '02',
+    title: 'Adoption is the product',
+    body: 'At J&J, the AI tool already worked. Getting teams to use it meant listening to feedback, aligning stakeholders, and changing the rollout. That work is what grew usage by 25%.',
+  },
+  {
+    n: '03',
+    title: 'Pick the metric first',
+    body: 'Before I build, I try to write down how I’ll know it worked. On my interview-question generator that metric (alignment with what the user asked for) told me which technical decision mattered most.',
+  },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="About Arnav Diddi: Technical Product Management M.S. student at Northeastern, Rutgers CS + BAIT grad, aspiring APM. Plus anime, skiing, lifting, basketball, and movies."
+>
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger grid-about">
+      <div>
+        <SectionHeader as="h1" eyebrow="About" title="Hi, I'm Arnav." class="!mb-8" />
+        <div class="drop-cap max-w-[62ch] space-y-4 text-[16.5px]">
+          <p>
+            I am a first-year Master's student in Technical Product Management at Northeastern University, working
+            toward becoming a Feature Product Manager who builds with AI. My goal is to start my career through an
+            Associate Product Manager program, where I can get close to real products right away and work on things I
+            care about.
+          </p>
+          <p>
+            At Rutgers, I double-majored in Business Analytics & Information Technology (BAIT) and Computer Science and
+            graduated Magna Cum Laude. That mix gave me a foundation on both the technical and business sides of
+            building products: I can write the query, and I can explain why the answer matters.
+          </p>
+          <p>
+            Most recently, I was a PMO Analyst at Johnson & Johnson Innovative Medicine. I led adoption of a
+            generative AI test-automation tool, managed 50+ user stories in Jira, and built Power BI dashboards that
+            gave leadership a clearer view of testing performance. It was my first real look at how much of product
+            work is listening, prioritizing, and aligning people.
+          </p>
+          <p>
+            Since then, I've kept building on my own: an app for personalized OCD treatment planning, a
+            privacy-first Instagram tool, and a couple of Claude skills that replace paywalled apps. I love working
+            with products and seeing ideas turn into something people actually use.
+          </p>
+          <p>
+            I'm always open to connecting, whether it's about roles, opportunities, or just exchanging ideas.
+            <a href="/contact" class="link">Say hello</a>.
+          </p>
+        </div>
+      </div>
+
+      <aside class="flex flex-col gap-6">
+        <div class="card !p-3">
+          <Image
+            src={headshot}
+            alt="Portrait of Arnav Diddi"
+            widths={[360, 540]}
+            sizes="(max-width: 819px) 90vw, 400px"
+            class="aspect-square w-full object-cover object-[50%_60%]"
+          />
+        </div>
+        <dl class="fields">
+          <div><dt>Studying</dt><dd>M.S. Product Management (Technical PM), Northeastern · ’28</dd></div>
+          <div><dt>Undergrad</dt><dd>B.S. BAIT + Computer Science, Rutgers · ’26 · Magna Cum Laude</dd></div>
+          <div><dt>Previously</dt><dd>PMO Analyst, Johnson & Johnson Innovative Medicine</dd></div>
+          <div><dt>Looking for</dt><dd>Summer 2027 PM internships → APM roles</dd></div>
+          <div><dt>Languages</dt><dd>{languages.join(' · ')}</dd></div>
+          <div><dt>Based in</dt><dd>{site.location} · from Belle Mead, NJ</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="principles-title">
+    <div class="container-ledger">
+      <header class="section-header">
+        <p class="eyebrow mb-3">How I work</p>
+        <h2 id="principles-title" class="section-title">How I think about product</h2>
+      </header>
+      <ol class="grid-cards list-none p-0">
+        {
+          principles.map((p) => (
+            <li class="card">
+              <span class="micro text-accent-2">{p.n}</span>
+              <h3 class="card-title mt-2">{p.title}</h3>
+              <p class="text-small mt-2 text-muted">{p.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="beyond-title">
+    <div class="container-ledger">
+      <header class="section-header">
+        <p class="eyebrow mb-3">Off the clock</p>
+        <h2 id="beyond-title" class="section-title">Beyond the résumé</h2>
+        <p class="lede mt-5 max-w-[62ch]">
+          I'm a pretty sociable guy and a proud extrovert. I'd rather be out with friends than sitting at home. Here's
+          what I'm into lately. If any of it overlaps with you, I'd love to hear from you.
+        </p>
+      </header>
+
+      <div class="interest-grid">
+        {
+          interests.map(({ entry, Content }) => (
+            <article class="card interest" id={entry.id}>
+              <p class="micro text-accent-2">{entry.data.label}</p>
+              <h3 class="mt-1 text-[1.45rem] font-semibold leading-tight">{entry.data.title}</h3>
+              <div class="interest-body mt-3 space-y-3 text-[15.5px]">
+                <Content />
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Masonry-style columns so boxes of different lengths pack neatly */
+  .interest-grid {
+    columns: 2;
+    column-gap: 20px;
+  }
+  .interest {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    padding: 26px;
+  }
+  .interest-body :global(em) {
+    color: var(--color-accent);
+  }
+  .interest-body :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 819px) {
+    .interest-grid {
+      columns: 1;
+    }
+  }
+</style>

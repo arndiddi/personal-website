@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { site } from '../data/site';
+
+/*
+  This form is handled by Netlify Forms (no server code needed):
+  - `data-netlify="true"` tells Netlify to capture submissions.
+  - `data-netlify-recaptcha="true"` + the empty <div> below make Netlify
+    inject a Google reCAPTCHA checkbox on the live site. Submissions that
+    don't pass the CAPTCHA are rejected.
+  - `netlify-honeypot` adds a hidden trap field that bots fill in.
+  Submissions show up in Netlify → your site → Forms, and you can turn on
+  email notifications there.
+*/
+const isDev = import.meta.env.DEV;
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch with Arnav Diddi about Summer 2027 product management internships, projects, or anything else."
+>
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger grid-contact">
+      <div>
+        <SectionHeader as="h1" eyebrow="Contact" title="Let's talk" class="!mb-8" />
+        <div class="max-w-[52ch] space-y-4 text-[16.5px]">
+          <p>
+            Whether you're hiring for a <strong>Summer 2027 PM internship</strong>, want to chat about a product, or
+            have an anime or ski-trip recommendation, I'd love to hear from you.
+          </p>
+          <p class="text-muted">I usually reply within a day or two.</p>
+        </div>
+
+        <dl class="fields mt-8">
+          <div>
+            <dt>Email</dt>
+            <dd><a class="link" href={`mailto:${site.email}`}>{site.email}</a></dd>
+          </div>
+          <div>
+            <dt>LinkedIn</dt>
+            <dd><a class="link" href={site.linkedin} target="_blank" rel="noopener">linkedin.com/in/arnavdiddi</a></dd>
+          </div>
+          <div>
+            <dt>GitHub</dt>
+            <dd><a class="link" href={site.github} target="_blank" rel="noopener">github.com/arndiddi</a></dd>
+          </div>
+          <div>
+            <dt>Based in</dt>
+            <dd>{site.location}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="card !p-8 max-sm:!p-5">
+        <form
+          name="contact"
+          method="POST"
+          action="/contact/thanks"
+          data-netlify="true"
+          data-netlify-recaptcha="true"
+          netlify-honeypot="bot-field"
+          class="flex flex-col gap-5"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hidden">
+            <label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+          </p>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class="label" for="name">Name</label>
+              <input class="input" id="name" name="name" type="text" autocomplete="name" required maxlength="120" />
+            </div>
+            <div>
+              <label class="label" for="email">Email</label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" required maxlength="200" />
+            </div>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class="label" for="role">I'm a…</label>
+              <select class="input" id="role" name="role">
+                <option>Recruiter</option>
+                <option>Hiring manager / PM</option>
+                <option>Fellow student</option>
+                <option>Just saying hi</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="label" for="company">Company <span class="normal-case text-dim">(optional)</span></label>
+              <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" />
+            </div>
+          </div>
+
+          <div>
+            <label class="label" for="message">Message</label>
+            <textarea class="input min-h-[150px] resize-y" id="message" name="message" required maxlength="5000"></textarea>
+          </div>
+
+          <!-- Netlify replaces this with the reCAPTCHA checkbox on the live site -->
+          <div data-netlify-recaptcha="true"></div>
+          {
+            isDev && (
+              <div class="micro rounded-[2px] border border-dashed border-line px-4 py-5 text-center text-dim">
+                reCAPTCHA checkbox appears here on the live Netlify site
+              </div>
+            )
+          }
+
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <p class="text-small text-dim">Protected by reCAPTCHA to keep out spam.</p>
+            <button type="submit" class="btn btn-primary">Send message →</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

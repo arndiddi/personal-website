@@ -1,0 +1,16 @@
+---
+/** Eyebrow + double-ruled title + optional intro paragraph. */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+const { eyebrow, title, as: Tag = 'h2', class: className = '' } = Astro.props;
+---
+
+<header class:list={['section-header', className]}>
+  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
+  <Tag class="section-title">{title}</Tag>
+  {Astro.slots.has('default') && <div class="lede mt-5 max-w-[62ch]"><slot /></div>}
+</header>

@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DraftBanner from '../../components/DraftBanner.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const { title, summary, status, dates, role, stack, outcome, links, draft } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={title} description={summary} type="article">
+  <article class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger">
+      <a href="/portfolio" class="micro text-muted hover:text-accent">← All projects</a>
+      {draft && <div class="mt-6"><DraftBanner /></div>}
+
+      <header class="mt-8 mb-12 max-w-[760px]">
+        <p class="eyebrow mb-3">Case study · {dates}</p>
+        <h1 class="hero-name">{title}</h1>
+        <p class="lede mt-5">{summary}</p>
+        <div class="mt-6">
+          <span class:list={['status-chip', status === 'In progress' && 'status-chip--gold']}>{status}</span>
+        </div>
+      </header>
+
+      <div class="case-grid">
+        <div class="prose prose-ledger">
+          <Content />
+        </div>
+
+        <aside class="case-facts">
+          <dl class="fields">
+            <div><dt>Role</dt><dd>{role}</dd></div>
+            <div><dt>Timeline</dt><dd>{dates}</dd></div>
+            {outcome && <div><dt>Outcome</dt><dd>{outcome}</dd></div>}
+            <div>
+              <dt>Built with</dt>
+              <dd class="mt-1 flex flex-wrap gap-1.5">{stack.map((s) => <span class="tag">{s}</span>)}</dd>
+            </div>
+            {
+              links.length > 0 && (
+                <div>
+                  <dt>Links</dt>
+                  <dd class="flex flex-col gap-1">
+                    {links.map((l) => (
+                      <a href={l.href} class="link" target="_blank" rel="noopener">
+                        {l.label} ↗
+                      </a>
+                    ))}
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </aside>
+      </div>
+
+      {
+        next && next.id !== project.id && (
+          <nav class="mt-20 border-t border-line pt-8" aria-label="Next project">
+            <p class="micro text-dim">Next project</p>
+            <a href={`/portfolio/${next.id}`} class="card-title mt-1 inline-block text-[1.4rem] hover:text-accent">
+              {next.data.title} →
+            </a>
+          </nav>
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .case-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 56px;
+    align-items: start;
+  }
+  .case-facts {
+    position: sticky;
+    top: 88px;
+  }
+  @media (max-width: 819px) {
+    .case-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .case-facts {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

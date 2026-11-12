@@ -1,0 +1,170 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import TeardownRow from '../components/TeardownRow.astro';
+import PostRow from '../components/PostRow.astro';
+import headshot from '../assets/headshot.jpg';
+import { site, hero, currently } from '../data/site';
+import { getPosts, getProjects, getTeardowns } from '../lib/content';
+
+// "Featured" = anything with `featured: true` in its Markdown frontmatter.
+const featuredProjects = (await getProjects()).filter((p) => p.data.featured).slice(0, 3);
+const featuredTeardowns = (await getTeardowns()).filter((t) => t.data.featured).slice(0, 2);
+const posts = await getPosts();
+const featuredPosts = [...posts.filter((p) => p.data.featured), ...posts.filter((p) => !p.data.featured)].slice(0, 2);
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="section !pt-[72px] max-md:!pt-12">
+    <div class="container-ledger grid-about items-center">
+      <div>
+        <p class="eyebrow mb-4">{hero.eyebrow}</p>
+        <h1 class="hero-name">{site.name}</h1>
+        <p class="mt-4 text-[1.35rem] leading-snug text-ink">{hero.tagline}</p>
+        <div class="mt-6">
+          <span class="status-chip">● {site.status}</span>
+        </div>
+        <p class="mt-7 max-w-[60ch] text-muted">{hero.intro}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/portfolio" class="btn btn-primary">See my work →</a>
+          <a href="/resume" class="btn btn-ghost">Resume</a>
+          <a href="/contact" class="btn btn-ghost">Get in touch</a>
+        </div>
+      </div>
+
+      <figure class="mx-auto w-full max-w-[380px] md:justify-self-end">
+        <div class="card !p-3">
+          <Image
+            src={headshot}
+            alt="Arnav Diddi in a dark suit and white shirt, smiling slightly"
+            widths={[360, 540, 720]}
+            sizes="(max-width: 819px) 90vw, 380px"
+            loading="eager"
+            fetchpriority="high"
+            class="aspect-[4/5] w-full object-cover object-[50%_62%]"
+          />
+        </div>
+        <figcaption class="micro mt-3 flex justify-between text-dim">
+          <span>Fig. 1</span><span>{site.location}</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Featured -->
+  <section class="section" aria-labelledby="featured-title">
+    <div class="container-ledger">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <header class="section-header !mb-12">
+          <p class="eyebrow mb-3">Featured work</p>
+          <h2 id="featured-title" class="section-title">Things I've built, and why</h2>
+          <p class="lede mt-5 max-w-[62ch]">
+            Each project is written up as a short case study: the problem, who it's for, the calls I made, and how I'd
+            know it's working.
+          </p>
+        </header>
+        <a href="/portfolio" class="link font-mono text-[13px] mb-12">All projects & teardowns →</a>
+      </div>
+
+      <div class="grid-cards">
+        {featuredProjects.map((project) => <ProjectCard project={project} />)}
+      </div>
+
+      {
+        featuredTeardowns.length > 0 && (
+          <div class="mt-16">
+            <h3 class="eyebrow mb-6">Featured teardown</h3>
+            <div class="card !p-7">
+              {featuredTeardowns.map((t) => (
+                <TeardownRow teardown={t} />
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- Brief about + Currently -->
+  <section class="section" aria-labelledby="about-title">
+    <div class="container-ledger grid-about">
+      <div>
+        <SectionHeader eyebrow="In brief" title="A little about me" class="!mb-8" />
+        <div class="drop-cap max-w-[62ch] space-y-4 text-[16.5px]">
+          <p>
+            I like owning a product end to end: understanding it inside and out, finding where it falls short, and
+            working with people to make it better. That's what pulled me toward product management.
+          </p>
+          <p>
+            At Rutgers I double-majored in Computer Science and Business Analytics & IT, so I'm comfortable on both
+            sides of the table, whether that's writing SQL or talking through trade-offs with stakeholders. At
+            J&J, I helped roll out a generative AI testing tool and learned that adoption is a product problem,
+            not just a technical one.
+          </p>
+          <p>
+            Outside of work I'm pretty social. You'll usually find me at the gym, on a basketball court, or
+            somewhere on a mountain going down a run I probably shouldn't be on.
+          </p>
+        </div>
+        <a href="/about" class="btn btn-ghost mt-8">More about me →</a>
+      </div>
+
+      <aside aria-labelledby="currently-title">
+        <h2 id="currently-title" class="eyebrow mb-4">Currently</h2>
+        <dl class="fields">
+          {
+            currently.map((row) => (
+              <div>
+                <dt>{row.key}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Writing -->
+  {
+    featuredPosts.length > 0 && (
+      <section class="section" aria-labelledby="writing-title">
+        <div class="container-ledger">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeader eyebrow="Writing" title="From the blog" class="!mb-10" />
+            <a href="/blog" class="link mb-10 font-mono text-[13px]">
+              All posts →
+            </a>
+          </div>
+          {featuredPosts.map((post) => (
+            <PostRow post={post} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container-ledger">
+      <div class="card flex flex-col gap-6 !p-10 max-sm:!p-6 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="eyebrow mb-2">Open to opportunities</p>
+          <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-tight">
+            Hiring for a Summer 2027 PM intern?
+          </h2>
+          <p class="mt-2 max-w-[52ch] text-muted">
+            I'd love to hear about the product and the team. Recruiters, PMs, and fellow builders are all welcome.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-3">
+          <a href="/contact" class="btn btn-primary">Contact me</a>
+          <a href={site.resumePdf} class="btn btn-ghost" download>Download resume</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
