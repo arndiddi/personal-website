@@ -63,6 +63,9 @@ const isDev = import.meta.env.DEV;
           class="flex flex-col gap-5"
         >
           <input type="hidden" name="form-name" value="contact" />
+          <!-- Email subject line. Netlify uses this field (it overrides the subject set in the
+               Netlify UI). The script below fills in the sender's name, role and company. -->
+          <input type="hidden" name="subject" value="New message from your website" />
           <p class="hidden">
             <label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
           </p>
@@ -80,7 +83,7 @@ const isDev = import.meta.env.DEV;
 
           <div class="grid gap-5 sm:grid-cols-2">
             <div>
-              <label class="label" for="role">I'm a…</label>
+              <label class="label" for="role">Role</label>
               <select class="input" id="role" name="role">
                 <option>Recruiter</option>
                 <option>Hiring manager / PM</option>
@@ -90,7 +93,11 @@ const isDev = import.meta.env.DEV;
               </select>
             </div>
             <div>
-              <label class="label" for="company">Company <span class="normal-case text-dim">(optional)</span></label>
+              <!-- "(optional)" sits outside the <label> so the email just says "Company" -->
+              <div class="flex items-baseline justify-between">
+                <label class="label" for="company">Company</label>
+                <span class="label !text-dim font-normal">Optional</span>
+              </div>
               <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" />
             </div>
           </div>
@@ -119,3 +126,16 @@ const isDev = import.meta.env.DEV;
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // Put the sender in the email subject: "New message from Jane Doe · Recruiter at Acme"
+  const form = document.querySelector<HTMLFormElement>('form[name="contact"]');
+  form?.addEventListener('submit', () => {
+    const value = (name: string) =>
+      (form.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${name}"]`)?.value ?? '').trim();
+    const subject = form.querySelector<HTMLInputElement>('input[name="subject"]');
+    if (!subject) return;
+    const company = value('company');
+    subject.value = `New message from ${value('name') || 'your website'} · ${value('role')}${company ? ` at ${company}` : ''}`;
+  });
+</script>
