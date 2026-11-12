@@ -2,6 +2,8 @@
 
 My personal and recruiting site. Built with **Astro + Tailwind CSS**, deployed on **Netlify**, and stored on **GitHub**.
 
+**Live:** https://arnavdiddi.netlify.app · every push to `main` redeploys automatically.
+
 | Route | What's there |
 | --- | --- |
 | `/` | Home: intro, status, **featured** projects / teardown / posts, "Currently" panel |
@@ -112,7 +114,7 @@ Netlify sees the push and rebuilds the live site in about 1–2 minutes.
    ```bash
    git push -u origin main
    ```
-2. **Import into Netlify.** Netlify → *Add new project* → *Import an existing project* → GitHub → pick the repo. Build settings are already in `netlify.toml`, so just click **Deploy**.
+2. **Import into Netlify.** Netlify → *Add new project* → *Import an existing project* → GitHub → pick the repo. Build settings are already in `netlify.toml`, so just click **Deploy**. (Don't use a `app.netlify.com/start/deploy?repository=…` link: that treats the repo as a template and makes a copy of it.)
 3. **Turn on the contact form.** Netlify → your project → **Forms** → *Enable form detection*, then trigger a redeploy (*Deploys → Trigger deploy*). The `contact` form appears in the Forms tab.
    - The reCAPTCHA checkbox is built in: Netlify injects it automatically because the form has `data-netlify-recaptcha="true"`. No Google keys needed.
    - To get emails: **Forms → Form notifications → Add notification → Email notification** → your address.
