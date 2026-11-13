@@ -11,13 +11,15 @@
  *   never written to disk, and scrubbed from anything this script outputs.
  * - The key is only sent over HTTPS (plain HTTP is allowed for localhost testing only).
  * - Every write needs --confirm, which Claude may add ONLY after the user said yes in chat.
- * - `create` always saves a hidden draft; going live is a separate `publish` step.
+ * - `create` saves a hidden draft unless --publish is given (only after the user approved
+ *   publishing). Creating and publishing in one call makes one commit = one Netlify deploy.
  *
  * Usage (Node 18+):
  *   node blog.mjs check
  *   node blog.mjs list
  *   node blog.mjs get <slug>
- *   node blog.mjs create <meta.json> [body.md] --confirm      (always saved as a draft)
+ *   node blog.mjs create <meta.json> [body.md] --confirm      (saved as a hidden draft)
+ *   node blog.mjs create <meta.json> [body.md] --publish --confirm   (straight to live)
  *   node blog.mjs update <slug> <changes.json> [body.md] --confirm
  *   node blog.mjs publish <slug> --confirm
  *   node blog.mjs unpublish <slug> --confirm
@@ -133,10 +135,11 @@ async function call(method, path, body) {
 
 const args = process.argv.slice(2);
 const confirmed = args.includes('--confirm');
-const [cmd, a, b, c] = args.filter((x) => x !== '--confirm');
+const publishNow = args.includes('--publish');
+const [cmd, a, b, c] = args.filter((x) => x !== '--confirm' && x !== '--publish');
 
 if (!cmd || cmd === 'help' || cmd === '--help') {
-  out('Commands: check | list | get <slug> | create <meta.json> [body.md] | update <slug> <changes.json> [body.md] | publish <slug> | unpublish <slug> | delete <slug>\nWrites need --confirm (only after the user says yes in chat).');
+  out('Commands: check | list | get <slug> | create <meta.json> [body.md] [--publish] | update <slug> <changes.json> [body.md] | publish <slug> | unpublish <slug> | delete <slug>\nWrites need --confirm (only after the user says yes in chat).');
   process.exit(0);
 }
 
@@ -179,8 +182,8 @@ switch (cmd) {
   case 'create': {
     const meta = readJsonFile(a);
     const content = readBody(b);
-    if (meta.draft === false) die('create always saves a draft. Create it first, then use `publish <slug>` after the user approves publishing.');
-    const payload = { ...meta, ...(content !== undefined ? { content } : {}), draft: true };
+    if ('draft' in meta) die('Leave "draft" out of the metadata. Add --publish to go live (only after the user approved publishing).');
+    const payload = { ...meta, ...(content !== undefined ? { content } : {}), draft: !publishNow };
     out(await call('POST', '/api/posts', payload));
     break;
   }

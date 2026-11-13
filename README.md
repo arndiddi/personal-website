@@ -141,6 +141,7 @@ Create, edit, publish, and unpublish posts by calling an endpoint, from a script
 - GitHub keeps every post, with full history, whether written by hand or through the API.
 - A new or edited post is live **about 1–2 minutes** after the call (the time a rebuild takes).
 - In `npm run dev` (with no `GITHUB_TOKEN` in `.env`), the API writes to your local files instead, which is handy for testing.
+- **Saving credits:** each live rebuild costs 15 of Netlify's 300 free monthly credits. Pushes that only touch hidden drafts (or `README.md`, `CLAUDE.md`, `.claude/`) skip the rebuild for free; see `scripts/netlify-ignore.mjs`. Publishing, unpublishing, and editing or deleting a live post still rebuild.
 
 **Auth:** every request needs your key in a header: `Authorization: Bearer <BLOG_API_KEY>` (or `x-api-key: <BLOG_API_KEY>`).
 

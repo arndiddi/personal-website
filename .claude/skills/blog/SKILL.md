@@ -69,7 +69,8 @@ Either way:
 node "$SKILL/scripts/blog.mjs" check                                   # key set + API reachable
 node "$SKILL/scripts/blog.mjs" list                                    # all posts, drafts included
 node "$SKILL/scripts/blog.mjs" get <slug>                              # one post with its Markdown
-node "$SKILL/scripts/blog.mjs" create <meta.json> <body.md> --confirm  # → saved draft (always draft)
+node "$SKILL/scripts/blog.mjs" create <meta.json> <body.md> --confirm            # → saved draft
+node "$SKILL/scripts/blog.mjs" create <meta.json> <body.md> --publish --confirm  # → published in one step
 node "$SKILL/scripts/blog.mjs" update <slug> <changes.json> [body.md] --confirm
 node "$SKILL/scripts/blog.mjs" publish <slug> --confirm
 node "$SKILL/scripts/blog.mjs" unpublish <slug> --confirm
@@ -79,7 +80,23 @@ node "$SKILL/scripts/blog.mjs" delete <slug> --confirm
 `meta.json` fields: `title` (required), `description` (required, one sentence, ≤320 chars), optional `slug`
 (lowercase-dashes; made from the title if omitted), `tags` (≤12), `featured`, `pubDate` (`YYYY-MM-DD`).
 `changes.json` takes any of those except `slug`; use `{}` when only the body changes. Publishing/unpublishing
-is only via `publish`/`unpublish`.
+is only via `create --publish`, `publish` and `unpublish`.
+
+## Netlify credits (keep deploys low)
+
+The site is on Netlify's Free plan: 300 credits a month, and each live rebuild costs 15. If credits run out,
+the whole site goes offline until the monthly reset. Every write is a GitHub commit, but the build is
+**skipped (free)** when a commit only touches posts that are hidden drafts both before and after the change.
+
+| Action | Rebuild? |
+| --- | --- |
+| Working draft (local files + chat preview) | No |
+| Save, edit, or delete a **saved draft** | No (skipped) |
+| Publish (`create --publish` or `publish`), update a published post, unpublish, delete a published post | Yes, 15 credits |
+
+So: polish in the working draft before anything is sent; when the user approves publishing right away, use
+`create --publish` (one rebuild) rather than `create` + `publish`; and bundle all changes to a published post
+into **one** `update`. Mention the rebuild when asking for approval of an action that triggers one.
 
 ## Workflow: writing a new post
 
@@ -107,8 +124,8 @@ is only via `publish`/`unpublish`.
 4. **Revise** until the user is happy. Re-show the preview after meaningful edits.
 5. **Offer the next step**, and ask: "Save this as a **saved draft** (hidden on the site), or **publish** it now?"
    - Saved draft: on a yes, run `create`.
-   - Publish now: on a yes to publishing, run `create` and then `publish` (that one yes covers both, since
-     the user approved going live). Say that it'll be live in about 1–2 minutes.
+   - Publish now: on a yes to publishing, run `create --publish` (one commit, one rebuild). Say that it'll be
+     live in about 1–2 minutes.
 6. **Report** the result: slug, status (saved draft / published), URL, and commit link if returned. Remind them a
    saved draft isn't visible on the live site until published.
 
