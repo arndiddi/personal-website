@@ -2,6 +2,7 @@
  * /api/posts/:slug
  *   GET   → the post's metadata + Markdown content (drafts included)
  *   PATCH → update any of: title, description, content, tags, draft, featured, pubDate
+ *   DELETE → permanently remove the post file (GitHub history keeps a copy)
  * Both require the API key. See README.md → "Blog API".
  */
 import type { APIRoute } from 'astro';
@@ -72,6 +73,32 @@ export const PATCH: APIRoute = async ({ request, params, url }) => {
       url: new URL(`/blog/${slug}`, url).href,
       ...result,
       note: noteFor(result.storage, next.draft),
+    });
+  } catch (err) {
+    return handleError(err);
+  }
+};
+
+export const DELETE: APIRoute = async ({ request, params }) => {
+  const denied = requireApiKey(request);
+  if (denied) return denied;
+  try {
+    const slug = checkSlug(params.slug);
+    const store = getStore();
+    const file = await store.get(slug);
+    if (!file) throw new HttpError(404, `No post with slug "${slug}".`);
+    const { meta } = parsePost(file.raw);
+    const result = await store.remove(slug, `blog: delete "${meta.title}"`, file.sha);
+    return json({
+      ok: true,
+      slug,
+      action: 'delete',
+      title: meta.title,
+      ...result,
+      note:
+        result.storage === 'local'
+          ? 'Deleted from your local files.'
+          : 'Deleted on GitHub (the old version stays in git history). Netlify is rebuilding; the page will be gone in about 1–2 minutes.',
     });
   } catch (err) {
     return handleError(err);

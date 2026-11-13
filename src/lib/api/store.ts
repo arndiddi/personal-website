@@ -19,6 +19,7 @@ export interface PostStore {
   list(): Promise<string[]>;
   get(slug: string): Promise<StoredFile | null>;
   put(slug: string, raw: string, message: string, sha?: string): Promise<WriteResult>;
+  remove(slug: string, message: string, sha?: string): Promise<WriteResult>;
 }
 
 export function getStore(): PostStore {
@@ -80,6 +81,17 @@ function githubStore(token: string, repo: string, branch: string): PostStore {
       const body = (await res.json()) as { commit?: { html_url?: string } };
       return { path: `${POSTS_DIR}/${slug}.md`, commitUrl: body.commit?.html_url, storage: 'github' };
     },
+    async remove(slug, message, sha) {
+      if (!sha) throw new HttpError(409, 'Missing file version; fetch the post again and retry.');
+      const res = await fetch(fileUrl(slug), {
+        method: 'DELETE',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, sha, branch }),
+      });
+      if (!res.ok) return fail(res, 'delete');
+      const body = (await res.json()) as { commit?: { html_url?: string } };
+      return { path: `${POSTS_DIR}/${slug}.md`, commitUrl: body.commit?.html_url, storage: 'github' };
+    },
   };
 }
 
@@ -109,6 +121,11 @@ function localStore(): PostStore {
       const { fs, dir, file } = await load();
       await fs.mkdir(dir, { recursive: true });
       await fs.writeFile(file(slug), raw, 'utf-8');
+      return { path: `${POSTS_DIR}/${slug}.md`, storage: 'local' };
+    },
+    async remove(slug) {
+      const { fs, file } = await load();
+      await fs.unlink(file(slug));
       return { path: `${POSTS_DIR}/${slug}.md`, storage: 'local' };
     },
   };

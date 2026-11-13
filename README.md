@@ -15,7 +15,7 @@ My personal and recruiting site. Built with **Astro + Tailwind CSS**, deployed o
 | `/blog` and `/blog/<post>` | Blog list and individual posts |
 | `/contact` | Contact form with reCAPTCHA (Netlify Forms) |
 | `/rss.xml`, `/sitemap-index.xml` | Feeds for readers and search engines |
-| `/api/posts` | Private blog API (create, edit, draft) |
+| `/api/posts` | Private blog API (create, edit, draft, delete) |
 
 ---
 
@@ -189,6 +189,14 @@ Unpublish (back to draft):
 
 ```bash
 curl -X PATCH "$SITE/api/posts/what-i-learned-shipping-my-first-ai-feature" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{"draft": true}'
+```
+
+### Delete a post: `DELETE /api/posts/<slug>`
+
+Removes the file entirely (GitHub history still keeps the old version). To just hide a post, unpublish it instead.
+
+```bash
+curl -X DELETE "$SITE/api/posts/what-i-learned-shipping-my-first-ai-feature" -H "Authorization: Bearer $KEY"
 ```
 
 ### Read posts (drafts included)
